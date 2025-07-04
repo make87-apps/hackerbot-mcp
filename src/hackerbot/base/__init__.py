@@ -19,9 +19,6 @@ from hackerbot.utils.hackerbot_helper import HackerbotHelper
 from hackerbot.utils.tts_helper import TTSHelper
 from .maps import Maps
 import time
-import sounddevice as sd
-from piper.voice import PiperVoice
-import numpy as np
 
 
 class Base:
@@ -253,11 +250,21 @@ class Base:
                 return
 
             try:
+                from piper.voice import PiperVoice
+                import numpy as np
+            except ImportError:
+                raise ImportError("piper-tts and numpy are required for voice features. Install with: pip install hackerbot[voice]")
+
+            try:
                 voice = PiperVoice.load(model_path)
             except Exception as e:
                 self._controller.log_error(f"Failed to load voice model: {e}")
                 return
 
+            try:
+                import sounddevice as sd
+            except ImportError:
+                raise ImportError("sounddevice is required for voice features. Install with: pip install hackerbot[voice]")
             try:
                 stream = sd.OutputStream(
                     samplerate=voice.config.sample_rate,

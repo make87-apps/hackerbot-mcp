@@ -20,19 +20,33 @@ name = "hackerbot"
 version = "0.6.0"
 description = "This module contains the setup for the hackerbot python package."
 authors = [
-  { name = "Allen Chien", email = "allen@hackerbot.co" }
+    { name = "Allen Chien", email = "allen@hackerbot.co" }
 ]
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-  "pyserial",
-  "pytest",
-  "piper-tts",
-  "sounddevice",
-  "pyaudio",
-  "huggingface_hub",
-  "requests",
+    "pyserial",
+    "requests",
+]
+
+[project.optional-dependencies]
+voice = [
+    "piper-tts",
+    "sounddevice",
+    "pyaudio",
+    "huggingface_hub",
+    "numpy",
+]
+
+mcp = [
+    "fastmcp",
+]
+
+dev = [
+    "pytest",
+    "ruff",
+    "setuptools",
 ]
 
 [project.urls]
@@ -43,7 +57,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]

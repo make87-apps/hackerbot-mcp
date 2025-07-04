@@ -8,7 +8,7 @@
 # Created:    April 2025
 # Updated:    2025.05.13
 #
-# This module contains the TTSHelper class that gets or downloads a Piper voice 
+# This module contains the TTSHelper class that gets or downloads a Piper voice
 # model from HuggingFace
 #
 # Special thanks to the following for their code contributions to this codebase:
@@ -22,8 +22,7 @@
 
 
 import os
-from huggingface_hub import hf_hub_url
-import requests
+
 
 class TTSHelper:
     """
@@ -68,8 +67,15 @@ class TTSHelper:
             RuntimeError: If the download fails.
         """
         try:
-            locale, person, pitch = voice.split('-')
-            lang, country = locale.split('_')
+            from huggingface_hub import hf_hub_url
+        except ImportError:
+            raise ImportError(
+                "huggingface_hub is required for voice features. Install with: pip install hackerbot[voice]"
+            )
+
+        try:
+            locale, person, pitch = voice.split("-")
+            lang, country = locale.split("_")
         except ValueError:
             raise RuntimeError(f"Invalid voice model name: {voice}")
 
@@ -77,8 +83,12 @@ class TTSHelper:
         filename_onnx = f"{voice}.onnx"
         filename_json = f"{voice}.onnx.json"
 
-        url_onnx = hf_hub_url(repo_id="rhasspy/piper-voices", filename=f"{base_path}/{filename_onnx}")
-        url_json = hf_hub_url(repo_id="rhasspy/piper-voices", filename=f"{base_path}/{filename_json}")
+        url_onnx = hf_hub_url(
+            repo_id="rhasspy/piper-voices", filename=f"{base_path}/{filename_onnx}"
+        )
+        url_json = hf_hub_url(
+            repo_id="rhasspy/piper-voices", filename=f"{base_path}/{filename_json}"
+        )
 
         path_onnx = os.path.join(self.cache_dir, filename_onnx)
         path_json = os.path.join(self.cache_dir, filename_json)
@@ -92,9 +102,15 @@ class TTSHelper:
 
     def _download_file(self, url: str, dest_path: str):
         try:
+            import requests
+        except ImportError:
+            raise ImportError(
+                "requests is required for voice features. Install with: pip install hackerbot[voice]"
+            )
+        try:
             response = requests.get(url, stream=True)
             response.raise_for_status()
-            with open(dest_path, 'wb') as f:
+            with open(dest_path, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
         except Exception as e:

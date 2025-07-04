@@ -1,4 +1,5 @@
 ![HackerBot](images/transparent_hb_horizontal_industries_.png)
+
 # Hackerbot Python Package
 
 The `hackerbot` Python package provides modules for controlling and managing the Hackerbot robotics system.
@@ -11,7 +12,8 @@ You can now install the package directly from PyPI:
 pip install hackerbot
 ```
 
-This will automatically install all required dependencies and make the `hackerbot` package available in your Python environment.
+This will automatically install all required dependencies and make the `hackerbot` package available in your Python
+environment.
 
 ### (Optional) Installing from Source
 
@@ -73,7 +75,8 @@ You should see your elephant arm moving to a straight-up position.
 bot.base.destroy(auto_dock=True)
 ```
 
-Safely clean up, and your Hackerbot will return to the charger. Once `destroy` is called, you need to create a new Hackerbot instance to perform new actions.
+Safely clean up, and your Hackerbot will return to the charger. Once `destroy` is called, you need to create a new
+Hackerbot instance to perform new actions.
 
 ## Usage
 
@@ -82,6 +85,38 @@ After installation, you can import and use the package in your Python scripts:
 ```python
 import hackerbot
 ```
+
+## Optional Features & Install Extras
+
+The `hackerbot` package supports several optional features via install extras:
+
+- **Voice/TTS Features**: All text-to-speech and voice-related functionality is available via the `voice` extra. To use
+  TTS or voice features, install with:
+  ```bash
+  pip install hackerbot[voice]
+  ```
+  This will install dependencies such as `piper-tts`, `sounddevice`, `huggingface_hub`, and others required for speech
+  synthesis and playback.
+
+- **Development & Testing**: For development and running tests, use the `dev` extra:
+  ```bash
+  pip install hackerbot[dev]
+  ```
+  This includes all tools and libraries needed for testing and development (e.g., `pytest`).
+
+- **MCP Server**: To enable the MCP server (allowing agents to control Hackerbot via
+  the [fastmcp](https://github.com/jlowin/fastmcp) protocol), use the `mcp` extra:
+  ```bash
+  pip install hackerbot[mcp]
+  ```
+  You can then start the MCP server with:
+  ```bash
+  python -m hackerbot mcp
+  ```
+  Optionally, specify host and port:
+  ```bash
+  python -m hackerbot mcp 0.0.0.0 8000
+  ```
 
 ## Testing
 

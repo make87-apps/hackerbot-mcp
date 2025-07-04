@@ -1,0 +1,27 @@
+version: 1
+interfaces:
+  - name: mcp-server
+    protocol: mcp
+    default_port:
+      name: mcp-server
+      protocol: TCP
+      target_port: 9988
+      publish_mode: Ingress
+    servers:
+      - name: mcp-server
+        spec:
+          string: mcp/http
+peripheral_requirements:
+  - name: CONTROLLER
+    peripheral_type: GenericDevice
+    constraints:
+      type: GenericDevice
+      path_prefix: "/dev/ttyACM"
+build:
+  custom:
+    dockerfile: build_kit/Dockerfile
+    platforms:
+      - linux/arm64
+dev_build:
+  build_kit:
+    name: python3

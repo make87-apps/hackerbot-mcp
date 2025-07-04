@@ -386,3 +386,7 @@ def gripper_open() -> bool:
 )
 def gripper_close() -> bool:
     return hb.arm.gripper.close()
+
+
+def start_mcp_server(host: str = "0.0.0.0", port: int = 8000, **kwargs):
+    mcp.run(transport="http", host=host, port=port, **kwargs)

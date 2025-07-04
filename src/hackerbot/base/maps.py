@@ -18,7 +18,8 @@
 from hackerbot.utils.hackerbot_helper import HackerbotHelper
 import time
 
-class Maps():
+
+class Maps:
     def __init__(self, controller: HackerbotHelper):
         self._controller = controller
         self._goto_completed = False
@@ -60,7 +61,7 @@ class Maps():
         except Exception as e:
             self._controller.log_error(f"Error in maps:fetch: {e}")
             return None
-    
+
     # Returns a list of map ids
     def list(self):
         """
@@ -84,7 +85,7 @@ class Maps():
         except Exception as e:
             self._controller.log_error(f"Error in maps:list: {e}")
             return None
-        
+
     def goto(self, x, y, angle, speed, block=True):
         """
         Move the robot to the specified location on the map.
@@ -106,7 +107,7 @@ class Maps():
             self._goal_angle = angle
             # Not fetching json response since machine mode not implemented
             if self._docked == True:
-                time.sleep(2) # Some time to leave the base
+                time.sleep(2)  # Some time to leave the base
                 self._docked = False
             if block:
                 self._wait_until_reach_pose()
@@ -114,7 +115,7 @@ class Maps():
         except Exception as e:
             self._controller.log_error(f"Error in maps:goto: {e}")
             return False
-        
+
     def position(self):
         try:
             self._controller.send_raw_command("B_POSE")
@@ -131,7 +132,7 @@ class Maps():
         except Exception as e:
             self._controller.log_error(f"Error in base:position: {e}")
             return False
-        
+
     def _wait_until_reach_pose(self):
         while not self._goto_completed:
             self.position()

@@ -22,8 +22,9 @@ from .head import Head
 from .arm import Arm
 from .utils.hackerbot_helper import HackerbotHelper
 
+
 class Hackerbot(HackerbotHelper):
-    def __init__(self, port=None, board=None, model=None,verbose_mode=False):
+    def __init__(self, port=None, board=None, model=None, verbose_mode=False):
         super().__init__(port, board, verbose_mode)
         # Share self (which is a HackerbotHelper) with subsystems
         self.core = Core(controller=self)

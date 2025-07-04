@@ -8,7 +8,7 @@
 # Created:    April 2025
 # Updated:    2025.04.07
 #
-# This module contains the SerialHelper class, which is a base class does the 
+# This module contains the SerialHelper class, which is a base class does the
 # serial handling. Including sending serial commands, finding serial ports
 # reading serial outputs.
 #
@@ -25,14 +25,17 @@ import json
 from collections import deque
 import time
 
+
 class SerialHelper:
-    HOME_DIR = os.environ['HOME']
+    HOME_DIR = os.environ["HOME"]
 
     LOG_FILE_PATH = os.path.join(HOME_DIR, "hackerbot/logs/serial_log.txt")
     MAP_DATA_PATH = os.path.join(HOME_DIR, "hackerbot/logs/map_{map_id}.txt")
 
     # port = '/dev/ttyACM1'
-    def __init__(self, port=None, board="adafruit:samd:adafruit_qt_py_m0", baudrate=230400):
+    def __init__(
+        self, port=None, board="adafruit:samd:adafruit_qt_py_m0", baudrate=230400
+    ):
         self.port = port
         self.board = board
         self.baudrate = baudrate
@@ -52,7 +55,7 @@ class SerialHelper:
             raise ConnectionError(f"Serial connection error: {port}. {e}")
         except Exception as e:
             raise RuntimeError(f"Error initializing main controller: {e}")
-        
+
         self.read_thread_stop_event = threading.Event()
         self.read_thread = threading.Thread(target=self.read_serial)
         self.read_thread.daemon = False
@@ -62,9 +65,11 @@ class SerialHelper:
         ports = list(serial.tools.list_ports.comports())
         for port in ports:
             if "QT Py" in port.description:
-                return port.device 
-            
-        raise ConnectionError(f"No Port found for {self.board}, are you using a different board?")
+                return port.device
+
+        raise ConnectionError(
+            f"No Port found for {self.board}, are you using a different board?"
+        )
 
     def get_board_and_port(self):
         return self.board, self.port
@@ -72,39 +77,45 @@ class SerialHelper:
     def send_raw_command(self, command):
         if self.ser and self.ser.is_open:
             try:
-                self.ser.write(command.encode('utf-8') + b'\r\n')
+                self.ser.write(command.encode("utf-8") + b"\r\n")
                 self.state = command
             except serial.SerialException as e:
                 raise IOError(f"Error writing to serial port: {e}")
         else:
             raise ConnectionError("Serial port is closed or unavailable!")
 
-    def get_state(self):    
+    def get_state(self):
         return self.state
-    
+
     def get_ser_error(self):
         return self.ser_error
-    
+
     def read_serial(self):
         if not self.ser:
             self.ser_error = "Serial connection not initialized."
             # raise ConnectionError("Serial connection not initialized.")
 
         try:
-            while not self.read_thread_stop_event.is_set():  # Check the stop event to exit the loop
+            while (
+                not self.read_thread_stop_event.is_set()
+            ):  # Check the stop event to exit the loop
                 try:
                     if not self.ser.is_open:
                         self.ser_error = "Serial port is closed or unavailable!"
                         # raise ConnectionError("Serial port is closed or unavailable!")
-                    
+
                     if self.ser.in_waiting > 0:
-                        response = self.ser.readline().decode('utf-8').strip()
+                        response = self.ser.readline().decode("utf-8").strip()
                         if response:
                             # Try to parse the response as JSON
                             try:
                                 json_entry = json.loads(response)
-                                if json_entry.get("command"): # Only store JSON entries with a "command" key
-                                    self.json_entries.append(json_entry)  # Store the latest JSON entry
+                                if json_entry.get(
+                                    "command"
+                                ):  # Only store JSON entries with a "command" key
+                                    self.json_entries.append(
+                                        json_entry
+                                    )  # Store the latest JSON entry
                             except json.JSONDecodeError:
                                 # If it's not a valid JSON entry, just continue
                                 continue
@@ -137,8 +148,10 @@ class SerialHelper:
                     raise Exception("Fail to fetch...")
             time.sleep(0.1)
 
-        raise Exception(f"Command {command_filter} not found in JSON entries after 5 retries")
-            
+        raise Exception(
+            f"Command {command_filter} not found in JSON entries after 5 retries"
+        )
+
     def stop_read_thread(self):
         """Call this method to stop the serial reading thread."""
         self.read_thread_stop_event.set()

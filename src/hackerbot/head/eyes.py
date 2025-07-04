@@ -17,7 +17,8 @@
 
 from hackerbot.utils.hackerbot_helper import HackerbotHelper
 
-class Eyes():
+
+class Eyes:
     def __init__(self, controller: HackerbotHelper):
         self._controller = controller
 

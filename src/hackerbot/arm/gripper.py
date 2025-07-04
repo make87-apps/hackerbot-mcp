@@ -17,6 +17,7 @@
 
 from hackerbot.utils.hackerbot_helper import HackerbotHelper
 
+
 class Gripper(HackerbotHelper):
     def __init__(self, controller: HackerbotHelper):
         self._controller = controller
@@ -35,7 +36,7 @@ class Gripper(HackerbotHelper):
         except Exception as e:
             self._controller.log_error(f"Error in gripper:calibrate: {e}")
             return False
-        
+
     def open(self):
         try:
             self._controller.send_raw_command("A_OPEN")
@@ -44,7 +45,7 @@ class Gripper(HackerbotHelper):
         except Exception as e:
             self._controller.log_error(f"Error in gripper:open: {e}")
             return False
-            
+
     def close(self):
         try:
             self._controller.send_raw_command("A_CLOSE")

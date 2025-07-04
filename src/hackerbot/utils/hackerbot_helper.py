@@ -20,12 +20,15 @@ from .serial_helper import SerialHelper
 import time
 import logging
 
+
 class HackerbotHelper(SerialHelper):
     def __init__(self, port=None, board=None, verbose_mode=False):
         self._error_msg = ""
         self._warning_msg = ""
         self._v_mode = verbose_mode
-        self._main_controller_init = False  # Ensure this is set before exception handling
+        self._main_controller_init = (
+            False  # Ensure this is set before exception handling
+        )
 
         self._json_mode = False
 
@@ -36,20 +39,19 @@ class HackerbotHelper(SerialHelper):
         self._right_tof_attached = False
 
         self._tofs_enabled = False
-        
+
         self._base_init = False
         self._driver_mode = False
-        
+
         self._audio_mouth_eyes_attached = False
         self._dynamixel_controller_attached = False
 
         self._arm_attached = False
-        
+
         self._port = port
         self._board = board
 
         self.setup()
-
 
     def setup(self):
         """
@@ -79,7 +81,7 @@ class HackerbotHelper(SerialHelper):
         try:
             if mode == True:
                 super().send_raw_command("JSON, 1")
-                time.sleep(0.1) # Short sleep to process json response
+                time.sleep(0.1)  # Short sleep to process json response
                 response = super().get_json_from_command("json")
                 if response is None:
                     raise Exception("Failed to set json mode to: ", mode)
@@ -89,7 +91,7 @@ class HackerbotHelper(SerialHelper):
         except Exception as e:
             raise Exception(f"Error in set_json_mode: {e}")
 
-    #Set TOFs
+    # Set TOFs
     def set_TOFs(self, mode):
         try:
             if not self._left_tof_attached or not self._right_tof_attached:
@@ -98,7 +100,7 @@ class HackerbotHelper(SerialHelper):
                 super().send_raw_command("TOFS, 1")
             else:
                 super().send_raw_command("TOFS, 0")
-            time.sleep(0.1) # Short sleep to process json response
+            time.sleep(0.1)  # Short sleep to process json response
             response = super().get_json_from_command("tofs")
             if response is None:
                 raise Exception("TOFs activation failed")
@@ -108,7 +110,7 @@ class HackerbotHelper(SerialHelper):
 
     def get_current_action(self):
         return super().get_state()
-    
+
     def get_error(self):
         # Serial error should be priority
         if super().get_ser_error() is not None:

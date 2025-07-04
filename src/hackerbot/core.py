@@ -19,11 +19,12 @@ from hackerbot.utils.hackerbot_helper import HackerbotHelper
 import time
 import json
 
-class Core():    
+
+class Core:
     def __init__(self, controller: HackerbotHelper):
         """
         Initialize Core component with HackerbotHelper object
-        
+
         :param controller: HackerbotHelper object
         """
         self.tofs_enabled = controller._tofs_enabled
@@ -31,7 +32,7 @@ class Core():
 
         self._controller = controller
 
-        self.ping() # Ping to check attached components
+        self.ping()  # Ping to check attached components
 
     def ping(self):
         """
@@ -55,17 +56,29 @@ class Core():
                 "temperature_sensor_attached": False,
                 "audio_mouth_eyes_attached": False,
                 "dynamixel_controller_attached": False,
-                "arm_control_attached": False
+                "arm_control_attached": False,
             }
 
             # Check component statuses
-            self._controller._main_controller_attached = response.get("main_controller") == "attached"
-            self._controller._temperature_sensor_attached = response.get("temperature_sensor") == "attached"
+            self._controller._main_controller_attached = (
+                response.get("main_controller") == "attached"
+            )
+            self._controller._temperature_sensor_attached = (
+                response.get("temperature_sensor") == "attached"
+            )
             self._controller._left_tof_attached = response.get("left_tof") == "attached"
-            self._controller._right_tof_attached = response.get("right_tof") == "attached"
-            self._controller._audio_mouth_eyes_attached = response.get("audio_mouth_eyes") == "attached"
-            self._controller._dynamixel_controller_attached = response.get("dynamixel_controller") == "attached"
-            self._controller._arm_attached = response.get("arm_controller") == "attached"
+            self._controller._right_tof_attached = (
+                response.get("right_tof") == "attached"
+            )
+            self._controller._audio_mouth_eyes_attached = (
+                response.get("audio_mouth_eyes") == "attached"
+            )
+            self._controller._dynamixel_controller_attached = (
+                response.get("dynamixel_controller") == "attached"
+            )
+            self._controller._arm_attached = (
+                response.get("arm_controller") == "attached"
+            )
 
             if not self._controller._main_controller_attached:
                 self._controller.log_warning("Main controller not attached")
@@ -77,12 +90,20 @@ class Core():
                 self._controller.log_warning("Right TOF not attached")
 
             # Update status
-            robots_state["main_controller_attached"] = self._controller._main_controller_attached
-            robots_state["temperature_sensor_attached"] = self._controller._temperature_sensor_attached
+            robots_state["main_controller_attached"] = (
+                self._controller._main_controller_attached
+            )
+            robots_state["temperature_sensor_attached"] = (
+                self._controller._temperature_sensor_attached
+            )
             robots_state["left_tof_attached"] = self._controller._left_tof_attached
             robots_state["right_tof_attached"] = self._controller._right_tof_attached
-            robots_state["audio_mouth_eyes_attached"] = self._controller._audio_mouth_eyes_attached
-            robots_state["dynamixel_controller_attached"] = self._controller._dynamixel_controller_attached
+            robots_state["audio_mouth_eyes_attached"] = (
+                self._controller._audio_mouth_eyes_attached
+            )
+            robots_state["dynamixel_controller_attached"] = (
+                self._controller._dynamixel_controller_attached
+            )
             robots_state["arm_control_attached"] = self._controller._arm_attached
             # Convert to JSON string (excluding warnings) before returning
             return json.dumps(robots_state, indent=2)
@@ -110,7 +131,7 @@ class Core():
                 "main_controller_version": response.get("main_controller"),
                 "audio_mouth_eyes_version": response.get("audio_mouth_eyes"),
                 "dynamixel_controller_version": response.get("dynamixel_controller"),
-                "arm_controller_version": response.get("arm_controller")
+                "arm_controller_version": response.get("arm_controller"),
             }
 
             return json.dumps(version_info, indent=2)

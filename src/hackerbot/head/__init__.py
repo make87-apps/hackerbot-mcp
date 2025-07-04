@@ -18,7 +18,8 @@
 from hackerbot.utils.hackerbot_helper import HackerbotHelper
 from .eyes import Eyes
 
-class Head():
+
+class Head:
     def __init__(self, controller: HackerbotHelper):
         self._controller = controller
         self.idle_mode = True
@@ -28,12 +29,16 @@ class Head():
 
     def setup(self):
         if not self._controller._dynamixel_controller_attached:
-            self._controller.log_warning("Dynamixel controller not attached, can't control head.")
+            self._controller.log_warning(
+                "Dynamixel controller not attached, can't control head."
+            )
         if not self._controller._audio_mouth_eyes_attached:
-            self._controller.log_warning("Audio mouth and eyes not attached, can't control eyes.")
+            self._controller.log_warning(
+                "Audio mouth and eyes not attached, can't control eyes."
+            )
 
         self.set_idle_mode(True)
-        
+
     # float: yaw - Unit is in degrees (eg. 180 degrees). Valid values are in the range of 100.0 to 260.0
     # float: pitch - Unit is in degrees (eg. 180 degrees). Valid values are in the range of 150.0 to 250.0
     # int: speed - Unitless. Valid values are integers in the range of 6 (slow) to 70 (fast)
@@ -46,7 +51,7 @@ class Head():
         except Exception as e:
             self._controller.log_error(f"Error in head:look: {e}")
             return False
-        
+
     def set_idle_mode(self, mode):
         try:
             if mode:

@@ -23,22 +23,22 @@ import sounddevice as sd
 from piper.voice import PiperVoice
 import numpy as np
 
-class Base():    
+
+class Base:
     def __init__(self, controller: HackerbotHelper):
         """
         Initialize Core component with HackerbotHelper object
-        
+
         :param controller: HackerbotHelper object
         """
         self._controller = controller
-        self.initialize() # Call before any action is done on the base
+        self.initialize()  # Call before any action is done on the base
 
         self.maps = Maps(controller)
 
         self._future_completed = False
-        self._docked = True # Default to true, assume always start from charger
+        self._docked = True  # Default to true, assume always start from charger
 
-      
     def initialize(self):
         try:
             self._controller.send_raw_command("B_INIT")
@@ -48,7 +48,7 @@ class Base():
         except Exception as e:
             self._controller.log_error(f"Error in base:initialize: {e}")
             raise Exception(f"Error in initialize: {e}")
-        
+
     def set_mode(self, mode):
         try:
             self._controller.send_raw_command(f"B_MODE,{mode}")
@@ -57,7 +57,7 @@ class Base():
         except Exception as e:
             self._controller.log_error(f"Error in base:set_mode: {e}")
             return False
-        
+
     def status(self):
         try:
             self._controller.send_raw_command("B_STATUS")
@@ -65,13 +65,16 @@ class Base():
             response = self._controller.get_json_from_command("status")
             if response is None:
                 raise Exception("Status command failed")
-            
-            if response.get("left_set_speed") == 0 and response.get("right_set_speed") == 0:
+
+            if (
+                response.get("left_set_speed") == 0
+                and response.get("right_set_speed") == 0
+            ):
                 self._future_completed = True
             else:
                 self._future_completed = False
 
-                        # Parse and return relevant fields
+                # Parse and return relevant fields
             parsed_data = {
                 "timestamp": response.get("timestamp"),
                 "left_encoder": response.get("left_encoder"),
@@ -86,7 +89,7 @@ class Base():
         except Exception as e:
             self._controller.log_error(f"Error in base:status: {e}")
             return None
-        
+
     def start(self, block=True):
         try:
             self._controller.send_raw_command("B_START")
@@ -101,7 +104,7 @@ class Base():
         except Exception as e:
             self._controller.log_error(f"Error in base:start: {e}")
             return False
-        
+
     def quickmap(self, block=True):
         """
         Start the quick mapping process.
@@ -122,7 +125,7 @@ class Base():
         except Exception as e:
             self._controller.log_error(f"Error in base:quickmap: {e}")
             return False
-        
+
     def dock(self, block=True):
         """
         Dock the base to the docking station.
@@ -146,7 +149,6 @@ class Base():
             self._controller.log_error(f"Error in base:dock: {e}")
             return False
 
-
     def kill(self):
         """
         Kill the base's movement. This is a blocking call and will not return until the base is stopped.
@@ -161,7 +163,7 @@ class Base():
         except Exception as e:
             self._controller.log_error(f"Error in base:kill: {e}")
             return False
-        
+
     def trigger_bump(self, left, right):
         """
         Trigger the bump sensors on the base.
@@ -179,7 +181,7 @@ class Base():
         except Exception as e:
             self._controller.log_error(f"Error in base:trigger_bump: {e}")
             return False
-        
+
     def drive(self, l_vel, a_vel, block=True):
         """
         Set the base velocity.
@@ -201,7 +203,7 @@ class Base():
         except Exception as e:
             self._controller.log_error(f"Error in base:drive: {e}")
             return False
-        
+
     def _wait_until_completed(self, block=True):
         if not block:
             return
@@ -209,13 +211,13 @@ class Base():
             self.status()
             # print(self.status())
         self._future_completed = False
-        
+
     def destroy(self, auto_dock=False):
         """
         Clean up and shut down the base.
 
-        This method kills the base's movement and optionally docks it before 
-        destroying the controller. If `auto_dock` is set to True, the base will 
+        This method kills the base's movement and optionally docks it before
+        destroying the controller. If `auto_dock` is set to True, the base will
         dock before the destruction process.
 
         :param auto_dock: If True, the base will dock before being destroyed. Defaults to False.
@@ -260,8 +262,8 @@ class Base():
                 stream = sd.OutputStream(
                     samplerate=voice.config.sample_rate,
                     channels=1,
-                    dtype='int16',
-                    blocksize=0  # Let sounddevice choose blocksize automatically
+                    dtype="int16",
+                    blocksize=0,  # Let sounddevice choose blocksize automatically
                 )
             except Exception as e:
                 self._controller.log_error(f"Failed to initialize audio stream: {e}")
@@ -269,18 +271,24 @@ class Base():
 
             try:
                 with stream:
-                    for audio_bytes in voice.synthesize_stream_raw(text, speaker_id=speaker_id):
+                    for audio_bytes in voice.synthesize_stream_raw(
+                        text, speaker_id=speaker_id
+                    ):
                         try:
                             int_data = np.frombuffer(audio_bytes, dtype=np.int16)
                             stream.write(int_data)
                         except Exception as e:
-                            self._controller.log_error(f"Error writing audio data to stream: {e}")
+                            self._controller.log_error(
+                                f"Error writing audio data to stream: {e}"
+                            )
                             break
 
                     try:
                         stream.stop()
                     except Exception as e:
-                        self._controller.log_error(f"Failed to stop audio stream cleanly: {e}")
+                        self._controller.log_error(
+                            f"Failed to stop audio stream cleanly: {e}"
+                        )
 
                 print("Finished speaking.")
 

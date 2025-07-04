@@ -18,7 +18,8 @@
 from hackerbot.utils.hackerbot_helper import HackerbotHelper
 from .gripper import Gripper
 
-class Arm():
+
+class Arm:
     def __init__(self, controller: HackerbotHelper):
         self._controller = controller
         self.idle_mode = True
@@ -27,7 +28,7 @@ class Arm():
         self.gripper = Gripper(self._controller)
 
     def setup(self):
-       if not self._controller._arm_attached:
+        if not self._controller._arm_attached:
             self._controller.log_warning("Arm not attached, can't control arm.")
 
     def move_joint(self, joint_id, angle, speed):
@@ -49,7 +50,7 @@ class Arm():
         except Exception as e:
             self._controller.log_error(f"Error in arm:move_joint: {e}")
             return False
-    
+
     def move_joints(self, j_agl_1, j_agl_2, j_agl_3, j_agl_4, j_agl_5, j_agl_6, speed):
         """
         Moves all six joints of the robotic arm to specified angles at a given speed.
@@ -67,11 +68,11 @@ class Arm():
             bool: True if the movement command was successfully sent, False if an error occurred.
         """
         try:
-            self._controller.send_raw_command(f"A_ANGLES,{j_agl_1},{j_agl_2},{j_agl_3},{j_agl_4},{j_agl_5},{j_agl_6},{speed}")
+            self._controller.send_raw_command(
+                f"A_ANGLES,{j_agl_1},{j_agl_2},{j_agl_3},{j_agl_4},{j_agl_5},{j_agl_6},{speed}"
+            )
             # Not fetching json response since machine mode not implemented
             return True
         except Exception as e:
             self._controller.log_error(f"Error in arm:move_joints: {e}")
-            return False    
-            
-            
+            return False

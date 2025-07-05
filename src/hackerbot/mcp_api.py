@@ -10,7 +10,7 @@ hb = Hackerbot()
 
 
 @mcp.resource(
-    "/maps/list",
+    "maps://list",
     description="""
         Returns a list of all available map IDs.
 
@@ -30,7 +30,7 @@ class PositionDict(TypedDict):
 
 
 @mcp.resource(
-    "/maps/position",
+    "maps://position",
     description="""
         Returns the current position of the base on the map as a dict:
         - x (float): X coordinate (meters)
@@ -43,7 +43,7 @@ def maps_position() -> Union[PositionDict, Literal[False]]:
 
 
 @mcp.resource(
-    "/maps/{map_id}",
+    "maps://{map_id}",
     description="""
         Fetches map data for the given map ID.
 
@@ -71,7 +71,7 @@ class BaseStatusDict(TypedDict):
 
 
 @mcp.resource(
-    "/base/status",
+    "base://status",
     description="""
         Returns the current status of the base as a dictionary with these keys:
         - timestamp
@@ -89,7 +89,7 @@ def base_status() -> Optional[BaseStatusDict]:
 
 
 @mcp.tool(
-    "/maps/goto",
+    "maps/goto",
     description="""
         Commands the robot to move to a specified location on the map.
 
@@ -111,7 +111,7 @@ def maps_goto(
 
 
 @mcp.tool(
-    "/base/set_mode",
+    "base/set_mode",
     description="""
         Sets the mode of the base.
 
@@ -124,7 +124,7 @@ def base_set_mode(mode: int) -> bool:
 
 
 @mcp.tool(
-    "/base/start",
+    "base/start",
     description="""
         Starts the base.
 
@@ -140,7 +140,7 @@ def base_start(block: bool = True) -> bool:
 
 
 @mcp.tool(
-    "/base/quickmap",
+    "base/quickmap",
     description="""
         Starts the quick mapping process.
 
@@ -156,7 +156,7 @@ def base_quickmap(block: bool = True) -> bool:
 
 
 @mcp.tool(
-    "/base/dock",
+    "base/dock",
     description="""
         Commands the base to dock at the docking station.
 
@@ -172,11 +172,11 @@ def base_dock(block: bool = True) -> bool:
 
 
 @mcp.tool(
-    "/base/kill",
+    "base/kill",
     description="""
         Stops all movement immediately (blocking call).
 
-        - After calling, base cannot move until /base/start is called.
+        - After calling, base cannot move until base/start is called.
     """,
 )
 def base_kill() -> bool:
@@ -184,7 +184,7 @@ def base_kill() -> bool:
 
 
 @mcp.tool(
-    "/base/trigger_bump",
+    "base/trigger_bump",
     description="""
         Activates or deactivates bump sensors.
 
@@ -201,7 +201,7 @@ def base_trigger_bump(left: int, right: int) -> bool:
 
 
 @mcp.tool(
-    "/base/drive",
+    "base/drive",
     description="""
         Sets the base velocity.
 
@@ -219,7 +219,7 @@ def base_drive(l_vel: int, a_vel: int, block: bool = True) -> bool:
 
 
 @mcp.tool(
-    "/base/destroy",
+    "base/destroy",
     description="""
         Stops and shuts down the base. Optionally docks first.
 
@@ -235,7 +235,7 @@ def base_destroy(auto_dock: bool = False) -> None:
 
 
 @mcp.tool(
-    "/base/speak",
+    "base/speak",
     description="""
         Synthesizes and plays speech audio from text.
 
@@ -253,7 +253,7 @@ def base_speak(model_src: str, text: str, speaker_id: int = None) -> None:
 
 
 @mcp.tool(
-    "/head/look",
+    "head/look",
     description="""
         Moves the head to the specified yaw, pitch, and speed.
 
@@ -271,7 +271,7 @@ def head_look(yaw: float, pitch: float, speed: int) -> bool:
 
 
 @mcp.tool(
-    "/head/set_idle_mode",
+    "head/set_idle_mode",
     description="""
         Enables or disables head idle mode.
 
@@ -287,7 +287,7 @@ def head_set_idle_mode(mode: bool) -> bool:
 
 
 @mcp.tool(
-    "/head/eyes/gaze",
+    "head/eyes/gaze",
     description="""
         Moves eyes to specified position in the view.
 

@@ -5,8 +5,7 @@ interfaces:
     default_port:
       name: mcp-server
       protocol: TCP
-      target_port: 9988
-      publish_mode: Ingress
+      target_port: 8000
     servers:
       - name: mcp-server
         spec:
